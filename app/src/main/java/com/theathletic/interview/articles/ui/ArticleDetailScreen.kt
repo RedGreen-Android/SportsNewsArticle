@@ -1,7 +1,8 @@
 package com.theathletic.interview.articles.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,100 +24,87 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.theathletic.interview.core.collectWithLifecycle
 import com.theathletic.interview.ui.theme.Black
+import com.theathletic.interview.ui.theme.Orange200
 import com.theathletic.interview.ui.theme.White
+import org.koin.androidx.compose.getViewModel
+
 
 @Composable
-fun ArticleDetailScreen(){
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-        text = "Details")
+fun ArticleDetailScreen(
+    viewModel: ArticlesViewModel = getViewModel(),
+    ){
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        Text(
+//        text = "Details")
+//}
+    val viewDetailState by viewModel.viewDetailState.collectAsState(initial = ArticleDetailViewState(true))
+
+    viewModel.viewEvent.collectWithLifecycle { //event->
+//        when (event){
+//          here you can handle one-off events
+//        }
+    }
+
+    viewDetailState.articleModels?.let { ArticleDetails(showLoading = viewDetailState.isLoading, models = it) }
 }
 
-//    val state by viewModel.viewState.collectAsState(initial = ArticlesViewState(true, emptyList()))
-//
-//    viewModel.viewEvent.collectWithLifecycle { //event->
-////        when (event){
-////          here you can handle one-off events
-////        }
-//    }
-//
-//    ArticlesList(showLoading = state.isLoading, models = state.articleModels)
-}
-
-//@Composable
-//fun ArticleDetailsList(showLoading: Boolean, models: List<ArticleUiModel>) {
-//    Box {
-//        if (showLoading) {
-//            Box(
-//                modifier = Modifier.fillMaxSize(),
-//                contentAlignment = Alignment.Center
-//            ) {
-//                CircularProgressIndicator()
-//            }
-//        }
-//        LazyColumn(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-//            items(models) {
-//                ArticleItem(it) }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun ArticleDetailItem(model: ArticleUiModel) {
-//    Box(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(color = Black)
-//            .height(200.dp)
-//    ) {
-//        AsyncImage(
-//            alpha = 0.5f,
-//            modifier = Modifier.fillMaxSize(),
-//            model = model.imageUrl,
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop
-//        )
-//        AsyncImage(
-//            alpha = 0.5f,
-//            modifier = Modifier.size(100.dp),
-//            model = model.authorImageUrl,
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop
-//        )
-//        Column(
-//            modifier = Modifier
-//                .padding(10.dp)
-//                .align(Alignment.BottomStart)
-//        ) {
-//            Text(
-//                text = model.title,
-//                style = MaterialTheme.typography.body1,
-//                color = White
-//            )
-//            Text(
-//                text = model.author ?: "",
-//                style = MaterialTheme.typography.caption,
-//                color = Black,
-//                fontSize = 15.sp
-//            )
-//            Text(
-//                text = model.updatedAt ?: "",
-//                style = MaterialTheme.typography.caption,
-//                color = White
-//            )
-//            Text(
-//                text = model.authorId ?: "",
-//                style = MaterialTheme.typography.caption,
-//                color = White
-//            )
-//        }
-//    }
-//}
-
-@Preview(backgroundColor = 0xFFffffff, showBackground = true, name = "Article")
 @Composable
-fun ArticleItemPreview() {
-    ArticleDetailScreen()
+fun ArticleDetails(models: ArticleUiModel, showLoading: Boolean) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Black)
+            .height(200.dp)
+    ) {
+        AsyncImage(
+            alpha = 0.5f,
+            modifier = Modifier.fillMaxWidth(),
+            model = models.imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        AsyncImage(
+            alpha = 0.5f,
+            modifier = Modifier.size(100.dp),
+            model = models.authorImageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        Column(
+            modifier = Modifier
+                .padding(10.dp)
+                .align(Alignment.BottomStart)
+        ) {
+            Text(
+                text = models.title,
+                style = MaterialTheme.typography.body1,
+                color = White
+            )
+            Text(
+                text = models.author ?: "",
+                style = MaterialTheme.typography.caption,
+                color = Orange200,
+                fontSize = 15.sp
+            )
+            Text(
+                text = models.body ?: "",
+                style = MaterialTheme.typography.caption,
+                color = White
+            )
+        }
+    }
 }
+
+//@Preview
+//@Composable
+//fun ArticleItemPreview(models: ArticleUiModel, showLoading: Boolean) {
+//    ArticleDetails(models = ArticleUiModel(
+//        title = models.title,
+//        imageUrl = models.imageUrl,
+//        updatedAt = models.updatedAt,
+//        ), showLoading = false)
+//}

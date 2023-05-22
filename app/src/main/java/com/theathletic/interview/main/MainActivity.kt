@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -40,7 +41,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
     private val articlesViewModel: ArticlesViewModel by viewModel()
-//    lateinit var navController : NavController
+    lateinit var navHostController : NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,39 +54,42 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//    @Composable
-//    fun ArticleNavigation (viewModel: ArticlesViewModel) {
-//
-//        val navHostController = rememberNavController()
+    @Composable
+    fun ArticleNavigation (viewModel: ArticlesViewModel) {
+
+         navHostController = rememberNavController()
+
+        NavHost(
+            navController = navHostController as NavHostController,
+            startDestination = Navigation.ArticleList.route
+        ) {
+            composable(Navigation.ArticleList.route){
+                ArticlesScreen(viewModel = viewModel, navHostController = navHostController as NavHostController)
+            }
+            composable(Navigation.ArticleDetails.route){backStackEntry ->
+//                val articleId = backStackEntry.arguments?.getString("articleId")
+                ArticleDetailScreen()
+            }
+        }
+    }
+
+    @Composable
+    fun MainScreenView() {
+//        val navController = rememberNavController()
+
+        ArticleNavigation (articlesViewModel)
 //
 //        NavHost(
-//            navController = navHostController,
+//            navController = navController,
 //            startDestination = Navigation.ArticleList.route
 //        ) {
 //            composable(Navigation.ArticleList.route){
-//                ArticlesScreen(viewModel = viewModel, navHostController = navHostController)
+//                ArticlesScreen(viewModel = articlesViewModel, navHostController = navController, onNavigationRequested = {})
 //            }
 //            composable(Navigation.ArticleDetails.route){
 //                ArticleDetailScreen()
 //            }
 //        }
-//    }
-
-    @Composable
-    fun MainScreenView() {
-        val navController = rememberNavController()
-
-        NavHost(
-            navController = navController,
-            startDestination = Navigation.ArticleList.route
-        ) {
-            composable(Navigation.ArticleList.route){
-                ArticlesScreen(viewModel = articlesViewModel, navHostController = navController)
-            }
-            composable(Navigation.ArticleDetails.route){
-                ArticleDetailScreen()
-            }
-        }
 //        ArticleNavigation(viewModel = articlesViewModel)
         var selectedScreen by remember { mutableStateOf(Screen.Articles as Screen) }
         Scaffold(bottomBar = {
@@ -96,15 +100,17 @@ class MainActivity : ComponentActivity() {
             Column(modifier = Modifier.padding(paddingValues)) {
                 when (selectedScreen) {
                     Screen.Articles -> {
-                        ArticlesScreen(articlesViewModel, navController)
+                        ArticlesScreen(articlesViewModel, navHostController as NavHostController)
                         ArticleDetailScreen()
                     }
-                    Screen.Leagues -> Text(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .align(Alignment.CenterHorizontally),
-                        text = "League List"
-                    )
+                    Screen.Leagues -> {
+                        Text(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .align(Alignment.CenterHorizontally),
+                            text = "League List"
+                        )
+                    }
                 }
             }
         }
@@ -123,7 +129,6 @@ class MainActivity : ComponentActivity() {
                     },
                     label = { Text(text = getString(item.resourceTitle), fontSize = 10.sp) },
                     onClick = {
-//                        navController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
                         onScreenSelected(item) })
             }
         }

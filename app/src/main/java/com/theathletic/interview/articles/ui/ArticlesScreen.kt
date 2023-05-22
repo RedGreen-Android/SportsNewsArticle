@@ -1,5 +1,6 @@
 package com.theathletic.interview.articles.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.Navigation
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.google.android.material.internal.NavigationMenu
 import com.theathletic.interview.articles.data.remote.AuthorsApiModel
@@ -43,13 +45,13 @@ class ArticleUiModel(
     val imageUrl: String?,
     val authorImageUrl : String? = null,
     val updatedAt : String?,
+    val body : String? = null,
 )
 
 @Composable
 fun ArticlesScreen(
     viewModel: ArticlesViewModel = getViewModel(),
-    navHostController: NavHostController,
-
+    navHostController: NavHostController
 ) {
 
     val state by viewModel.viewState.collectAsState(initial = ArticlesViewState(true, emptyList()))
@@ -64,7 +66,8 @@ fun ArticlesScreen(
 }
 
 @Composable
-fun ArticlesList(showLoading: Boolean, models: List<ArticleUiModel>, navHostController: NavController
+fun ArticlesList(showLoading: Boolean, models: List<ArticleUiModel>, navController: NavHostController
+
 ) {
     Box {
         if (showLoading) {
@@ -78,10 +81,11 @@ fun ArticlesList(showLoading: Boolean, models: List<ArticleUiModel>, navHostCont
         LazyColumn(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             items(models) {
                 Surface(modifier = Modifier.clickable {
-                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
+//                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
                 }) {
-                    ArticleItem(it, navHostController,
-                    )
+                    ArticleItem(it,navController )
+
+//                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
                 }
 
             }
@@ -90,7 +94,8 @@ fun ArticlesList(showLoading: Boolean, models: List<ArticleUiModel>, navHostCont
 }
 
 @Composable
-fun ArticleItem(model: ArticleUiModel, navController: NavController) {
+fun ArticleItem(model: ArticleUiModel, navHostController: NavHostController,
+                ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,7 +103,9 @@ fun ArticleItem(model: ArticleUiModel, navController: NavController) {
             .height(200.dp)
             .clickable {
 //                onGettingClick
-                navController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
+                navHostController.navigate(route = com.theathletic.interview.utils.Navigation.ArticleDetails.route)
+                Log.d("HIT", "now hit")
+//                onItemClicked()
             }
     ) {
         AsyncImage(
@@ -117,6 +124,9 @@ fun ArticleItem(model: ArticleUiModel, navController: NavController) {
         )
         Column(
             modifier = Modifier
+                .clickable {
+                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
+                }
                 .padding(10.dp)
                 .align(Alignment.BottomStart)
         ) {
@@ -125,22 +135,19 @@ fun ArticleItem(model: ArticleUiModel, navController: NavController) {
                 style = MaterialTheme.typography.body1,
                 color = White
             )
-            Text(
-                text = model.author ?: "",
-                style = MaterialTheme.typography.caption,
-                color = Orange200,
-                fontSize = 15.sp
-            )
-            Text(
-                text = model.updatedAt ?: "",
-                style = MaterialTheme.typography.caption,
-                color = White
-            )
-//            Text(
-//                text = model.authorId ?: "",
-//                style = MaterialTheme.typography.caption,
-//                color = White
-//            )
+            if (model.displayAuthor) {
+                Text(
+                    text = model.author ?: "",
+                    style = MaterialTheme.typography.caption,
+                    color = Orange200,
+                    fontSize = 15.sp
+                )
+                Text(
+                    text = model.updatedAt ?: "",
+                    style = MaterialTheme.typography.caption,
+                    color = White
+                )
+            }
         }
     }
 }

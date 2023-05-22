@@ -9,7 +9,4 @@ data class Authors (
     val createdAt: String,
     val imageUrl: String
 ) {
-    companion object {
-        const val UNKNOWN_FIELD = ""
-    }
 }

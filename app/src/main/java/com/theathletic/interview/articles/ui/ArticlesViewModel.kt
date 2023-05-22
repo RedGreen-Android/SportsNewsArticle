@@ -24,6 +24,9 @@ class ArticlesViewModel(
     val viewState = _viewState.asStateFlow()
     val viewEvent: Flow<ArticleEvent> = _viewEvent
 
+    private val _viewDetailState = MutableStateFlow(ArticleDetailViewState())
+    val viewDetailState = _viewDetailState.asStateFlow()
+
     init {
         viewModelScope.launch {
             val articles = articleRepository.getArticles()
@@ -33,12 +36,20 @@ class ArticlesViewModel(
         }
     }
 
-    private fun onArticlesLoaded(articles: List<Article>, authors: List<Authors?>) {
+    private fun onArticlesLoaded(articles: List<Article>, authors: List<Authors>) {
         _viewState.updateState {
             copy(articleModels = articles.map { items ->
-                items.toUiModel(authors)
+                items.toUiModel(authors.find {
+                    items.authorId?.id == it.id
+                })
             }, isLoading = false)
         }
     }
+
+
+
+
+
+
 
 }

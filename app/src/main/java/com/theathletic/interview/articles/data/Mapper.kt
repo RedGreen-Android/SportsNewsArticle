@@ -1,10 +1,7 @@
 package com.theathletic.interview.articles.data
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.theathletic.interview.articles.data.Article.Companion.UNKNOWN
 import com.theathletic.interview.articles.data.remote.ArticleApiModel
-import com.theathletic.interview.articles.data.remote.AuthorsApi
 import com.theathletic.interview.articles.data.remote.AuthorsApiModel
 import com.theathletic.interview.articles.ui.ArticleUiModel
 
@@ -14,7 +11,7 @@ fun ArticleApiModel.toDomain() = Article(
     body = body ?: UNKNOWN,
     teamId = teamId ?: UNKNOWN,
     leagueId = leagueId ?: UNKNOWN,
-    authorId = authorId ?: UNKNOWN,
+    authorId = author,
     imageUrl = imageUrlString ?: ""
 )
 
@@ -36,13 +33,3 @@ fun AuthorsApiModel.toDomain() = Authors(
     createdAt = createdAt?: "",
     imageUrl = imageUrlString ?: "",
 )
-
-//fun Authors.toUiModel() = ArticleUiModel(
-//    title = "",
-//    author = id,
-//    authorImageUrl = imageUrl,
-//    displayAuthor = true,
-//    updatedAt = updatedAt,
-//    imageUrl = imageUrl
-//
-//    )

@@ -5,6 +5,11 @@ data class ArticlesViewState(
     val articleModels: List<ArticleUiModel> = emptyList(),
 )
 
+data class ArticleDetailViewState(
+    val isLoading: Boolean = true,
+    val articleModels: ArticleUiModel? = null
+)
+
 sealed interface ArticleEvent {
     object ShowSomeMessage : ArticleEvent
 }
