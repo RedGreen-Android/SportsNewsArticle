@@ -1,5 +1,10 @@
 package com.theathletic.interview.articles.data
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 data class Article(
     val id: String,
     val body: String,
@@ -12,4 +17,13 @@ data class Article(
     companion object {
         const val UNKNOWN = ""
     }
+
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    val firstApiFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+//
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    val format = LocalDate.parse(updatedAt.toString(), firstApiFormat)
+
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    val date = LocalDate.parse(updatedAt , firstApiFormat)
 }

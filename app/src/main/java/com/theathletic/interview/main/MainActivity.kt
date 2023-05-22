@@ -23,16 +23,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.theathletic.interview.R
+import com.theathletic.interview.articles.ui.ArticleDetailScreen
 import com.theathletic.interview.articles.ui.ArticlesScreen
 import com.theathletic.interview.articles.ui.ArticlesViewModel
 import com.theathletic.interview.ui.theme.AthleticTheme
+import com.theathletic.interview.utils.Navigation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
     private val articlesViewModel: ArticlesViewModel by viewModel()
+//    lateinit var navController : NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +53,40 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+//    @Composable
+//    fun ArticleNavigation (viewModel: ArticlesViewModel) {
+//
+//        val navHostController = rememberNavController()
+//
+//        NavHost(
+//            navController = navHostController,
+//            startDestination = Navigation.ArticleList.route
+//        ) {
+//            composable(Navigation.ArticleList.route){
+//                ArticlesScreen(viewModel = viewModel, navHostController = navHostController)
+//            }
+//            composable(Navigation.ArticleDetails.route){
+//                ArticleDetailScreen()
+//            }
+//        }
+//    }
+
     @Composable
     fun MainScreenView() {
+        val navController = rememberNavController()
+
+        NavHost(
+            navController = navController,
+            startDestination = Navigation.ArticleList.route
+        ) {
+            composable(Navigation.ArticleList.route){
+                ArticlesScreen(viewModel = articlesViewModel, navHostController = navController)
+            }
+            composable(Navigation.ArticleDetails.route){
+                ArticleDetailScreen()
+            }
+        }
+//        ArticleNavigation(viewModel = articlesViewModel)
         var selectedScreen by remember { mutableStateOf(Screen.Articles as Screen) }
         Scaffold(bottomBar = {
             BottomNavigation(
@@ -56,7 +96,8 @@ class MainActivity : ComponentActivity() {
             Column(modifier = Modifier.padding(paddingValues)) {
                 when (selectedScreen) {
                     Screen.Articles -> {
-                        ArticlesScreen(articlesViewModel)
+                        ArticlesScreen(articlesViewModel, navController)
+                        ArticleDetailScreen()
                     }
                     Screen.Leagues -> Text(
                         modifier = Modifier
@@ -81,7 +122,9 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     label = { Text(text = getString(item.resourceTitle), fontSize = 10.sp) },
-                    onClick = { onScreenSelected(item) })
+                    onClick = {
+//                        navController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
+                        onScreenSelected(item) })
             }
         }
     }
@@ -93,3 +136,13 @@ class MainActivity : ComponentActivity() {
         object Leagues : Screen(R.string.title_leagues, R.drawable.ic_leagues)
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun ItemPreview() {
+//    AthleticTheme {
+//        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+//            MainScreenView()
+//        }
+//    }
+//}
