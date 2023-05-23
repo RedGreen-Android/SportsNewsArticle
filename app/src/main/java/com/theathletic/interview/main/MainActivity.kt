@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,7 +35,7 @@ import com.theathletic.interview.articles.ui.ArticleDetailScreen
 import com.theathletic.interview.articles.ui.ArticlesScreen
 import com.theathletic.interview.articles.ui.ArticlesViewModel
 import com.theathletic.interview.ui.theme.AthleticTheme
-import com.theathletic.interview.utils.Navigation
+import com.theathletic.interview.articles.ui.utils.Navigation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -56,7 +55,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ArticleNavigation (viewModel: ArticlesViewModel) {
-
          navHostController = rememberNavController()
 
         NavHost(
@@ -66,7 +64,7 @@ class MainActivity : ComponentActivity() {
             composable(Navigation.ArticleList.route){
                 ArticlesScreen(viewModel = viewModel, navHostController = navHostController as NavHostController)
             }
-            composable(Navigation.ArticleDetails.route){backStackEntry ->
+            composable(Navigation.ArticleDetails.route){ backStackEntry ->
 //                val articleId = backStackEntry.arguments?.getString("articleId")
                 ArticleDetailScreen()
             }
@@ -75,22 +73,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MainScreenView() {
-//        val navController = rememberNavController()
-
         ArticleNavigation (articlesViewModel)
-//
-//        NavHost(
-//            navController = navController,
-//            startDestination = Navigation.ArticleList.route
-//        ) {
-//            composable(Navigation.ArticleList.route){
-//                ArticlesScreen(viewModel = articlesViewModel, navHostController = navController, onNavigationRequested = {})
-//            }
-//            composable(Navigation.ArticleDetails.route){
-//                ArticleDetailScreen()
-//            }
-//        }
-//        ArticleNavigation(viewModel = articlesViewModel)
         var selectedScreen by remember { mutableStateOf(Screen.Articles as Screen) }
         Scaffold(bottomBar = {
             BottomNavigation(
@@ -142,12 +125,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun ItemPreview() {
-//    AthleticTheme {
-//        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-//            MainScreenView()
-//        }
-//    }
-//}

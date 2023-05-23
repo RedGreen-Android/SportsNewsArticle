@@ -24,6 +24,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.theathletic.interview.core.collectWithLifecycle
@@ -37,17 +39,7 @@ import org.koin.androidx.compose.getViewModel
 fun ArticleDetailScreen(
     viewModel: ArticlesViewModel = getViewModel(),
     ){
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        Text(
-//        text = "Details")
-//}
     val viewDetailState by viewModel.viewDetailState.collectAsState(initial = ArticleDetailViewState(true))
-
-    viewModel.viewEvent.collectWithLifecycle { //event->
-//        when (event){
-//          here you can handle one-off events
-//        }
-    }
 
     viewDetailState.articleModels?.let { ArticleDetails(showLoading = viewDetailState.isLoading, models = it) }
 }
@@ -95,6 +87,60 @@ fun ArticleDetails(models: ArticleUiModel, showLoading: Boolean) {
                 style = MaterialTheme.typography.caption,
                 color = White
             )
+        }
+    }
+}
+
+@Composable
+fun CustomDialog(
+    title: String,
+    imageurl: String,
+    onDismiss: () -> Unit,
+    authorName: String,
+    properties: DialogProperties = DialogProperties()
+) {
+    Dialog(onDismissRequest = onDismiss,
+        properties = properties) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Black)
+                .height(200.dp)
+        ) {
+//            AsyncImage(
+//                alpha = 0.5f,
+//                modifier = Modifier.fillMaxWidth(),
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop
+//            )
+//            AsyncImage(
+//                alpha = 0.5f,
+//                modifier = Modifier.size(100.dp),
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop
+//            )
+            Column(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .align(Alignment.BottomStart)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.body1,
+                    color = White
+                )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.caption,
+                    color = Orange200,
+                    fontSize = 15.sp
+                )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.caption,
+                    color = White
+                )
+            }
         }
     }
 }

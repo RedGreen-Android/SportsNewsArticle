@@ -1,4 +1,4 @@
-package com.theathletic.interview.utils
+package com.theathletic.interview.articles.ui.utils
 
 sealed class Navigation (val route: String){
 

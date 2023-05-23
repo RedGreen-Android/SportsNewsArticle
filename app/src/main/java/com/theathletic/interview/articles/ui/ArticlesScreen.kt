@@ -1,6 +1,7 @@
 package com.theathletic.interview.articles.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,28 +16,29 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.google.android.material.internal.NavigationMenu
-import com.theathletic.interview.articles.data.remote.AuthorsApiModel
+import com.theathletic.interview.articles.ui.utils.Navigation
 import com.theathletic.interview.core.collectWithLifecycle
 import com.theathletic.interview.ui.theme.Black
 import com.theathletic.interview.ui.theme.Orange200
 import com.theathletic.interview.ui.theme.White
 import org.koin.androidx.compose.getViewModel
+import kotlin.coroutines.coroutineContext
 
 class ArticleUiModel(
     val title: String,
@@ -55,11 +57,17 @@ fun ArticlesScreen(
 ) {
 
     val state by viewModel.viewState.collectAsState(initial = ArticlesViewState(true, emptyList()))
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
 
-    viewModel.viewEvent.collectWithLifecycle { //event->
-//        when (event){
-//          here you can handle one-off events
-//        }
+    viewModel.viewEvent.collectWithLifecycle { event->
+        when (event){
+
+            is ArticleEvent.ShowSomeMessage ->
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = "Articles were successfully Loaded",
+                    duration = SnackbarDuration.Short
+                )
+        }
     }
 
     ArticlesList(showLoading = state.isLoading, models = state.articleModels, navHostController)
@@ -80,21 +88,14 @@ fun ArticlesList(showLoading: Boolean, models: List<ArticleUiModel>, navControll
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             items(models) {
-                Surface(modifier = Modifier.clickable {
-//                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
-                }) {
                     ArticleItem(it,navController )
-
-//                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
-                }
-
             }
         }
     }
 }
 
 @Composable
-fun ArticleItem(model: ArticleUiModel, navHostController: NavHostController,
+fun ArticleItem(model: ArticleUiModel, navHostController: NavHostController, onGettingClick: () -> Unit = {}
                 ) {
     Box(
         modifier = Modifier
@@ -103,9 +104,8 @@ fun ArticleItem(model: ArticleUiModel, navHostController: NavHostController,
             .height(200.dp)
             .clickable {
 //                onGettingClick
-                navHostController.navigate(route = com.theathletic.interview.utils.Navigation.ArticleDetails.route)
-                Log.d("HIT", "now hit")
-//                onItemClicked()
+                navHostController.navigate(route = Navigation.ArticleDetails.route)
+                Log.d("onClick", "Click is hit")
             }
     ) {
         AsyncImage(
@@ -125,7 +125,7 @@ fun ArticleItem(model: ArticleUiModel, navHostController: NavHostController,
         Column(
             modifier = Modifier
                 .clickable {
-                    navHostController.navigate(com.theathletic.interview.utils.Navigation.ArticleDetails.route)
+                    navHostController.navigate(Navigation.ArticleDetails.route)
                 }
                 .padding(10.dp)
                 .align(Alignment.BottomStart)

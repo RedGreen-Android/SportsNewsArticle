@@ -45,11 +45,4 @@ class ArticlesViewModel(
             }, isLoading = false)
         }
     }
-
-
-
-
-
-
-
 }
