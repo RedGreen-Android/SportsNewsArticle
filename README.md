@@ -1,4 +1,4 @@
-# Android 2 Screen App. First screen with list of news Article with details and Second screen, more indept of the Author
+# First screen- list of news Article with details. Second screen - more indepth of Author
 
 ![2020-12-30 12 10 57](https://user-images.githubusercontent.com/299434/103378717-1ef83700-4a98-11eb-97c1-a3ffd1238208.gif)
 
